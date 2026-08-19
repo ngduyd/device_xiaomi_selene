@@ -69,22 +69,30 @@ jobs:
         set +e
         source build/envsetup.sh
         set -e
+        set -o pipefail
         lunch omni_selene-eng
         mka adbd ${{ github.event.inputs.BUILD_TARGET }}image 2>&1 | tee build.log
 
-    - name: Upload build log on failure
-      if: failure()
+    - name: Upload build log
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: build-log-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ github.run_id }}
         path: OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/build.log
-        retention-days: 7
+        retention-days: 14
 
     - name: Find output image
       run: |
         cd ${GITHUB_WORKSPACE}/OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}
         IMG=$(ls out/target/product/selene/OrangeFox*.img 2>/dev/null | head -1)
-        if [ -n "$IMG" ]; then echo "IMG_PATH=${GITHUB_WORKSPACE}/OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/selene/$(basename $IMG)" >> $GITHUB_ENV; fi
+        [ -z "$IMG" ] && IMG=$(ls out/target/product/selene/recovery.img 2>/dev/null | head -1)
+        [ -z "$IMG" ] && IMG=$(ls out/target/product/selene/boot.img 2>/dev/null | head -1)
+        if [ -n "$IMG" ]; then
+          echo "IMG_PATH=${GITHUB_WORKSPACE}/OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/out/target/product/selene/$(basename $IMG)" >> $GITHUB_ENV
+          echo "FOUND: $IMG"
+        else
+          echo "no image found"; ls -la out/target/product/selene/ | head -30
+        fi
 
     - name: Upload recovery image
       if: env.IMG_PATH != ''
