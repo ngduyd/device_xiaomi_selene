@@ -29,10 +29,26 @@ jobs:
       contents: write
     timeout-minutes: 180
     steps:
-    - name: Clean-up
-      uses: rokibhasansagar/slimhub_actions@main
+    - name: Free disk space (manual cleanup, no 3rd-party action)
       continue-on-error: true
-      timeout-minutes: 15
+      timeout-minutes: 10
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /usr/local/share/powershell
+        sudo rm -rf /usr/share/swift
+        sudo rm -rf /usr/local/.ghcup
+        sudo rm -rf /opt/hostedtoolcache/CodeQL
+        sudo rm -rf /usr/lib/google-cloud-sdk
+        sudo rm -rf /usr/share/miniconda
+        sudo rm -rf /usr/local/lib/node_modules
+        sudo rm -rf /usr/share/az_11 /usr/share/az_12
+        sudo rm -rf /usr/local/share/boost
+        sudo rm -rf /usr/local/go
+        sudo rm -rf /var/lib/docker || true
+        sudo apt-get clean -y || true
+        df -h / | tail -1
 
     - name: Swap Space
       uses: pierotofy/set-swap-space@master
