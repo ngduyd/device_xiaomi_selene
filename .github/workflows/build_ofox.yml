@@ -12,9 +12,9 @@ on:
         - 12.1
         - 14.1
       BUILD_TARGET:
-        description: 'Target image (selene VAB -> recovery as boot)'
+        description: 'Target image (selene VAB recovery-as-boot -> boot)'
         required: true
-        default: 'recovery'
+        default: 'boot'
         type: choice
         options:
         - recovery
