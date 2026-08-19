@@ -27,9 +27,12 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     permissions:
       contents: write
+    timeout-minutes: 180
     steps:
     - name: Clean-up
       uses: rokibhasansagar/slimhub_actions@main
+      continue-on-error: true
+      timeout-minutes: 15
 
     - name: Swap Space
       uses: pierotofy/set-swap-space@master
