@@ -66,9 +66,9 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_DEVICE=selene
         export LC_ALL=C
-        set -x
+        set +e
         source build/envsetup.sh
-        set +x
+        set -e
         lunch omni_selene-eng
         mka adbd ${{ github.event.inputs.BUILD_TARGET }}image 2>&1 | tee build.log
 
