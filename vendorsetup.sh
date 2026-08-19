@@ -73,7 +73,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
         # -- add settings for R11 --
         export FOX_R11=1
         export OF_MAINTAINER="yazidkucrit"
-        export FOX_BUILD_TYPE="KeongBalap"
+        export FOX_BUILD_TYPE="ngduyd"
         
         
         # screen settings
