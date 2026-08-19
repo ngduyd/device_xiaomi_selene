@@ -71,6 +71,7 @@ BOARD_KERNEL_TAGS_OFFSET := 0x0bc08000
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 BOARD_BOOTIMG_HEADER_VERSION := 2
+BOARD_BOOT_HEADER_VERSION := 2
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_KERNEL_IMAGE_NAME := Image.gz
 
@@ -147,10 +148,12 @@ TW_INCLUDE_CRYPTO := true
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
     libkeymaster4 \
+    libkeymaster41 \
     libpuresoftkeymasterdevice
 
 TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster41.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
     
 # TWRP Configuration
