@@ -58,6 +58,7 @@ jobs:
     - name: Build Environment
       timeout-minutes: 20
       run: |
+        export DEBIAN_FRONTEND=noninteractive
         sudo apt update -y
         git clone https://gitlab.com/OrangeFox/misc/scripts
         cd scripts
