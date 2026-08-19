@@ -20,6 +20,8 @@ DEVICE_PATH := device/xiaomi/selene
 
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
+# Allow ELF prebuilts in PRODUCT_COPY_FILES (TWRP recovery/root binaries)
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Architecture
 TARGET_ARCH := arm64
