@@ -82,7 +82,7 @@ jobs:
         set -e
         set -o pipefail
         lunch omni_selene-eng
-        mka recoveryimage 2>&1 | tee build.log
+        mka bootimage 2>&1 | tee build.log
 
     - name: Upload build log
       if: always()
