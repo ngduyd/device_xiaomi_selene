@@ -91,3 +91,14 @@ PRODUCT_PACKAGES += \
     
 PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,$(LOCAL_PATH)/recovery/root,recovery/root) \
             $(LOCAL_PATH)/prebuilt/dtb.img:dtb.img
+
+# OrangeFox Recovery (VAB recovery-as-boot)
+RECOVERY_VARIANT := orangefox
+
+TARGET_RECOVERY_DEVICE_MODULES += \
+    libkeymaster41 \
+    libpuresoftkeymasterdevice \
+    android.hardware.keymaster@4.1-service.beanpod
+
+PRODUCT_PACKAGES += \
+    bootctrl.mt6768.recovery
