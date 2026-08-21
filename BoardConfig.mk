@@ -77,6 +77,8 @@ BOARD_BOOTIMG_HEADER_VERSION := 2
 BOARD_BOOT_HEADER_VERSION := 2
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_KERNEL_IMAGE_NAME := Image.gz
+# Use prebuilt kernel (no kernel source built in this tree)
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz
 
 BOARD_KERNEL_SEPERATED_DTBO := true
 
