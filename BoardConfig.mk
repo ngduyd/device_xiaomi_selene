@@ -148,6 +148,12 @@ TARGET_COPY_OUT_SYSTEM_EXT = system_ext
 # Crypto
 TW_INCLUDE_CRYPTO := true
 
+# Force keymaster 4.1: recovery's FBE decrypt stack defaults to 4.0, but our
+# beanpod HAL registers 4.1 (vintf declares 4.1). TW_FORCE_KEYMASTER_VER blocks
+# ROM prop overrides of the device-tree km version.
+OF_DEFAULT_KEYMASTER_VERSION := 4.1
+TW_FORCE_KEYMASTER_VER := true
+
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
     libkeymaster4 \
