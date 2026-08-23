@@ -19,6 +19,11 @@ jobs:
     permissions:
       contents: write
     timeout-minutes: 180
+    env:
+      USE_CCACHE: 1
+      CCACHE_DIR: /home/runner/.ccache
+      CCACHE_MAXSIZE: 5G
+      CCACHE_COMPRESS: 1
     steps:
     - name: Free disk space (manual cleanup, no 3rd-party action)
       continue-on-error: true
@@ -40,6 +45,41 @@ jobs:
         sudo rm -rf /var/lib/docker || true
         sudo apt-get clean -y || true
         df -h / | tail -1
+
+    - name: Cache ccache (compile cache)
+      uses: actions/cache@v4
+      with:
+        path: ~/.ccache
+        key: ccache-${{ runner.os }}-${{ hashFiles('device/xiaomi/selene/BoardConfig.mk', 'device/xiaomi/selene/device.mk') }}-${{ github.sha }}
+        restore-keys: |
+          ccache-${{ runner.os }}-${{ hashFiles('device/xiaomi/selene/BoardConfig.mk', 'device/xiaomi/selene/device.mk') }}-
+          ccache-${{ runner.os }}-
+
+    - name: Cache OrangeFox source (synced tree)
+      uses: actions/cache@v4
+      with:
+        path: |
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/.repo
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/build
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/frameworks
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/system
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/hardware
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/bootable
+        key: orangefox-source-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ github.sha }}
+        restore-keys: |
+          orangefox-source-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-
+          orangefox-source-${{ runner.os }}-
+
+    - name: Cache device/vendor trees
+      uses: actions/cache@v4
+      with:
+        path: |
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/device/xiaomi/selene
+          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/vendor/xiaomi/selene
+        key: device-vendor-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ hashFiles('OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/device/xiaomi/selene/**', 'OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/vendor/xiaomi/selene/**') }}
+        restore-keys: |
+          device-vendor-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-
+          device-vendor-${{ runner.os }}-
 
     - name: Swap Space
       uses: pierotofy/set-swap-space@master
@@ -77,12 +117,14 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_BUILD_DEVICE=selene
         export LC_ALL=C
-        set +e
+        ccache -z
         source build/envsetup.sh
-        set -e
-        set -o pipefail
         lunch omni_selene-eng
         mka bootimage 2>&1 | tee build.log
+
+    - name: ccache stats
+      if: always()
+      run: ccache -s
 
     - name: Upload build log
       if: always()
