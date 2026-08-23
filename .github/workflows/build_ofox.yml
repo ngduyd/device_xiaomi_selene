@@ -92,9 +92,11 @@ jobs:
         export FOX_BUILD_DEVICE=selene
         export LC_ALL=C
         ccache -z
-        source build/envsetup.sh
-        lunch omni_selene-eng
-        mka bootimage 2>&1 | tee build.log
+        bash -l -c "
+          source build/envsetup.sh
+          lunch omni_selene-eng
+          mka bootimage 2>&1 | tee build.log
+        "
 
     - name: ccache stats
       if: always()
