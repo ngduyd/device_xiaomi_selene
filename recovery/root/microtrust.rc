@@ -185,8 +185,10 @@ on property:vold.decrypt=trigger_restart_framework
     write /proc/bootprof "start teei cfg end (on trigger_restart_framework)"
 
 on fs
-    # Secure-storage RPMB backing dirs (moved from on post-fs: recovery does not run
-    # microtrust.rc on post-fs, so SST could not open its device -> keymaster SEGV)
+    # Mount persist so SST (secure storage) has its RPMB backing device.
+    # Recovery does not auto-mount persist before on fs, so SST failed to open
+    # its device -> keymaster SEGV -> /data decrypt failed -> splash hang.
+    mount /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
     chown system system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
     mkdir /mnt/vendor/persist/rpmb
