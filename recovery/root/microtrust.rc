@@ -184,28 +184,21 @@ on property:vold.decrypt=trigger_restart_framework
     restorecon_recursive /data/vendor/thh
     write /proc/bootprof "start teei cfg end (on trigger_restart_framework)"
 
-on post-fs
-    # Set /mnt/vendor/persist/rpmb
+on fs
+    # Secure-storage RPMB backing dirs (moved from on post-fs: recovery does not run
+    # microtrust.rc on post-fs, so SST could not open its device -> keymaster SEGV)
     chown system system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
-    restorecon_recursive /mnt/vendor/persist
-
     mkdir /mnt/vendor/persist/rpmb
     chown system system /mnt/vendor/persist/rpmb
     chmod 0771 /mnt/vendor/persist/rpmb
-    restorecon_recursive /mnt/vendor/persist/rpmb
-
-    # Set other rpmb
     mkdir /persist/rpmb
-    mkdir /vendor/persist/rpmb
-    chmod 0771 /persist/rpmb
-    chmod 0771 /vendor/persist/rpmb
     chown system system /persist/rpmb
+    chmod 0771 /persist/rpmb
+    mkdir /vendor/persist/rpmb
     chown system system /vendor/persist/rpmb
-    restorecon_recursive /persist
-    restorecon_recursive /vendor/persist
+    chmod 0771 /vendor/persist/rpmb
 
-on fs
     chmod 0660 /dev/teei_client
     chown system system /dev/teei_client
     chmod 0660 /dev/teei_config
