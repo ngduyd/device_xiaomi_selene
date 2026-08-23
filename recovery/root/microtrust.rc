@@ -229,8 +229,6 @@ on fs
     chmod 0660 /dev/utr_tui
     write /proc/bootprof "start teei_daemon (on fs)"
     start teei_daemon
-    # keymaster depends on TEE; wait_for_tee.sh blocks until keymaster TA session opens
-    start keymaster-4-1
     write /proc/bootprof "start teei_daemon end (on fs)"
 
 on property:vendor.crypto.fake_encrypt=1 && property:vold.post_fs_data_done=1

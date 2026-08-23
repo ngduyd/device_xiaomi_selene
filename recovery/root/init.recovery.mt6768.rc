@@ -45,7 +45,7 @@ service gatekeeper-1-0 /system/bin/android.hardware.gatekeeper@1.0-service
     disabled
     seclabel u:r:recovery:s0
 
-service keymaster-4-1 /system/bin/wait_for_tee.sh
+service keymaster-4-1 /system/bin/android.hardware.keymaster@4.1-service.beanpod
     interface android.hardware.keymaster@4.0::IKeymasterDevice default
     interface android.hardware.keymaster@4.1::IKeymasterDevice default
     user root
@@ -56,7 +56,12 @@ service keymaster-4-1 /system/bin/wait_for_tee.sh
 
 on property:hwservicemanager.ready=true
     start gatekeeper-1-0
-   
+    # beanpod keymaster SEGVs (TEEC_AllocateSharedMemory ffff000c) if it starts
+    # before teei_daemon is ready. microtrust.rc exposes no ready property, so
+    # give the TEE daemon a moment before connecting.
+    exec u:r:recovery:s0 root root -- /system/bin/sleep 2
+    start keymaster-4-1
+ 
 on property:ro.crypto.state=unsupported
     stop teei_daemon
     stop keymaster-4-1
