@@ -46,40 +46,14 @@ jobs:
         sudo apt-get clean -y || true
         df -h / | tail -1
 
-    - name: Cache ccache (compile cache)
+    - name: Cache ccache (compile cache only - NO source tree)
       uses: actions/cache@v4
       with:
         path: ~/.ccache
-        key: ccache-${{ runner.os }}-${{ hashFiles('device/xiaomi/selene/BoardConfig.mk', 'device/xiaomi/selene/device.mk') }}-${{ github.sha }}
+        key: ccache-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ github.sha }}
         restore-keys: |
-          ccache-${{ runner.os }}-${{ hashFiles('device/xiaomi/selene/BoardConfig.mk', 'device/xiaomi/selene/device.mk') }}-
+          ccache-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-
           ccache-${{ runner.os }}-
-
-    - name: Cache OrangeFox source (synced tree)
-      uses: actions/cache@v4
-      with:
-        path: |
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/.repo
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/build
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/frameworks
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/system
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/hardware
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/bootable
-        key: orangefox-source-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ github.sha }}
-        restore-keys: |
-          orangefox-source-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-
-          orangefox-source-${{ runner.os }}-
-
-    - name: Cache device/vendor trees
-      uses: actions/cache@v4
-      with:
-        path: |
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/device/xiaomi/selene
-          OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/vendor/xiaomi/selene
-        key: device-vendor-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-${{ hashFiles('OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/device/xiaomi/selene/**', 'OrangeFox/fox_${{ github.event.inputs.MANIFEST_BRANCH }}/vendor/xiaomi/selene/**') }}
-        restore-keys: |
-          device-vendor-${{ runner.os }}-${{ github.event.inputs.MANIFEST_BRANCH }}-
-          device-vendor-${{ runner.os }}-
 
     - name: Swap Space
       uses: pierotofy/set-swap-space@master
