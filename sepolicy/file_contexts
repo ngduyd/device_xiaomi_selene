@@ -1,0 +1,10 @@
+# MicroTrust TEE char device labels (selene / MT6768)
+/dev/isee_tee0      u:object_r:tee_device:s0
+/dev/teei_client    u:object_r:tee_device:s0
+/dev/teei_config    u:object_r:tee_device:s0
+/dev/teei_fp        u:object_r:tee_device:s0
+/dev/tz_vfs         u:object_r:tee_device:s0
+/dev/ut_keymaster   u:object_r:tee_device:s0
+/dev/rpmb0          u:object_r:tee_device:s0
+/dev/emmcrpmb0      u:object_r:tee_device:s0
+/dev/utr_tui        u:object_r:tee_device:s0

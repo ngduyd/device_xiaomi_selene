@@ -194,3 +194,6 @@ TW_INCLUDE_FB2PNG := true
 
 # TW Version
 TW_DEVICE_VERSION := KeongBalap™ 
+
+# Recovery SELinux policy: TEE device + soter property allow rules for keymaster
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy

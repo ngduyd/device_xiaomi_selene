@@ -1,0 +1,22 @@
+# TEE / keymaster SELinux allow rules for the recovery domain (selene / MT6768)
+#
+# The MicroTrust TEE char devices were labeled with the generic "device" type, so
+# recovery (beanpod keymaster HAL + teei_daemon) was denied open/read/write/ioctl,
+# which made the TEE driver reject TEEC_AllocateSharedMemory with ffff000c and
+# crash keymaster. These rules (plus the file_contexts labels) fix that.
+# Additive on top of the v17 keymaster start config — does not touch rc files.
+
+# New type for the MicroTrust TEE char devices.
+type tee_device, dev_type;
+
+# Let recovery talk to the TEE driver.
+allow recovery tee_device:chr_file { open read write ioctl getattr };
+allow recovery tee_device:dir search;
+
+# Let recovery set the soter (teei) init status property without tripping a
+# vendor_default_prop neverallow.
+type soter_prop, property_type;
+allow recovery soter_prop:property_service set;
+
+# Let recovery start the keymaster HAL interface.
+allow recovery ctl_interface_start_prop:property_service set;
