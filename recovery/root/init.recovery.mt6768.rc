@@ -21,7 +21,7 @@ on post-fs
     # Mount persist so SST (secure storage) TA has its RPMB backing device.
     # Must be after mtk_plpath_utils creates the by-name symlink (post-fs),
     # NOT in microtrust on fs (symlink not ready yet there).
-    mount /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
+    mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
     chown system system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
     mkdir /mnt/vendor/persist/rpmb
