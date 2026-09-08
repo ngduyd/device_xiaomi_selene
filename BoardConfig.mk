@@ -165,7 +165,9 @@ TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     
 # TWRP Configuration
 TW_THEME := portrait_hdpi
-RECOVERY_SDCARD_ON_DATA := false
+# NOTE: RECOVERY_SDCARD_ON_DATA must NOT be set at all (any value incl "false"
+# enables it — OrangeFox Android.mk tests non-empty). No-decrypt build stores
+# nothing on /data; use external SD / OTG / adb sideload.
 TW_EXCLUDE_DEFAULT_USB_INIT := true
 TW_EXTRA_LANGUAGES := true
 TW_INCLUDE_NTFS_3G := true
