@@ -145,14 +145,12 @@ TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_SYSTEM_EXT = system_ext
 
-# Crypto
-TW_INCLUDE_CRYPTO := true
-
-# Force keymaster 4.1: recovery's FBE decrypt stack defaults to 4.0, but our
-# beanpod HAL registers 4.1 (vintf declares 4.1). TW_FORCE_KEYMASTER_VER blocks
-# ROM prop overrides of the device-tree km version.
-OF_DEFAULT_KEYMASTER_VERSION := 4.1
-TW_FORCE_KEYMASTER_VER := true
+# Crypto — DISABLED: MIUI stock kernel (4.14.186) rejects TEE_IOC_SHM_ALLOC in
+# recovery mode (EINVAL), so beanpod keymaster crashes -> FBE unlock impossible.
+# Recovery runs in no-decrypt mode: /data stays encrypted; install via external
+# SD card, USB-OTG, or adb sideload instead.
+TW_INCLUDE_CRYPTO := false
+TW_INCLUDE_FBE_METADATA_DECRYPT := false
 
 # Additional binaries & libraries needed for recovery
 TARGET_RECOVERY_DEVICE_MODULES += \
@@ -167,9 +165,8 @@ TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES += \
     
 # TWRP Configuration
 TW_THEME := portrait_hdpi
-RECOVERY_SDCARD_ON_DATA := true
+RECOVERY_SDCARD_ON_DATA := false
 TW_EXCLUDE_DEFAULT_USB_INIT := true
-TW_INCLUDE_FBE_METADATA_DECRYPT := true
 TW_EXTRA_LANGUAGES := true
 TW_INCLUDE_NTFS_3G := true
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file

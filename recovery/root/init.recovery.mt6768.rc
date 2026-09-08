@@ -75,12 +75,12 @@ service keymaster-4-1 /system/bin/android.hardware.keymaster@4.1-service.beanpod
     seclabel u:r:recovery:s0
 
 on property:hwservicemanager.ready=true
-    start gatekeeper-1-0
-    # beanpod keymaster SEGVs (TEEC_AllocateSharedMemory ffff000c) if it starts
-    # before teei_daemon is ready. microtrust.rc exposes no ready property, so
-    # give the TEE daemon a moment before connecting.
-    exec u:r:recovery:s0 root root -- /system/bin/sleep 2
-    start keymaster-4-1
+    # No-decrypt build (TW_INCLUDE_CRYPTO=false): kernel rejects TEE_IOC_SHM_ALLOC
+    # in recovery mode, so beanpod keymaster can never come up. Skip the TEE HAL
+    # stack entirely instead of crash-looping; teei_daemon still starts above for
+    # kernels that support it, but nothing depends on it now.
+    stop gatekeeper-1-0
+    stop keymaster-4-1
 
 on property:ro.crypto.state=unsupported
     stop teei_daemon
